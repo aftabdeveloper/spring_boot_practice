@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto){
         return new ResponseEntity<>(productService.createProduct(productDto),HttpStatus.CREATED);
@@ -36,11 +38,13 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     @PutMapping("/{id}")
     public ProductDto updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto){
         return productService.updateProduct(id,productDto);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     @DeleteMapping("/{id}")
     public String deleteProduct(@PathVariable Long id){
         return productService.deleteProduct(id);
